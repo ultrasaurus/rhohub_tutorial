@@ -1,0 +1,11 @@
+h1. Getting Started
+
+With Rhodes, you write your application in Ruby with the UI in HTML and CSS with embedded Ruby code (.erb files) to create dynamic, data-driven elements. RhoHub allows you to quickly create and build applications, reducing the overhead of getting started and as well as streamlining ongoing development effort.  
+
+You can do a lot in Rhodes with minimal coding.  If you are already an experienced programmer, you will likely be able to read and understand the code in these tutorials, even if you don't already know the Ruby programming language.  However, if you are new to Ruby, we recommend that you first read "this quick intro":http://www.ruby-lang.org/en/documentation/ruby-from-other-languages which provides a nice primer in the basics of the language.  
+
+h2. Create your Rhohub account
+
+Create a Rhohub account at "rhohub.com":http://rhohub.com.  After signing up, you will receive an email containing a link directing you to http://<your-user-name>.rhohub.com/dashboard.  This is your public profile page.  To access your dashboard, click the “Login” link in the upper right-hand corner of the page and enter your login information. 
+
+

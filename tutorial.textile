@@ -1,0 +1,302 @@
+h1. Building a Crossplatform Native Smartphone App with RhoHub
+"Rhodes":http://wiki.rhomobile.com/index.php/Rhodes allows you to create applications for multiple smartphone platforms.  You write your application in Ruby with the UI in HTML and CSS with embedded Ruby code (.erb files) to create dynamic, data-driven elements. RhoHub allows you to quickly create and build applications, reducing the overhead of getting started and as well as streamlining ongoing development effort.  The following tutorials will guide you through creating an application using RhoHub.
+
+h1. Lesson 1: Simple Offline Application
+This lesson will show you how to create an application that does not connect to a server, but does allow users to retrieve and edit local data.  You can look at a screencast of "building an application using RhoHub in one minute":http://www.youtube.com/watch?v=yTmdV4eC_7o for a quick preview of the steps to building this kind of application. The tutorial below shows you how to build a simple product inventory application.
+
+h2. Create the application 
+
+The name you use for your application is purely for your own reference, it need not appear to your end users, but it will appear in the URLs that you use for development.
+
+!http://img.skitch.com/20090830-f81k2pmf93s7r2t7gp64ukrfnp.jpg!
+
+h2. Create a model
+
+The application creation wizard lets you create one model which serves as a starting point for your application. Whatever you define in this step will be included with UI and actions to support listing objects, create, show, update and delete.  When you enter information about your model, it will be used to generate server and client application code. In this lesson, we'll be making a client-only application. We will use the generated server code in lesson 2, but you could release a finished application with only the client-side code and functionality.
+
+Note: Model attributes are always represented as strings.
+
+!http://img.skitch.com/20090830-bekyyh4gt44yiah52qdn28jpx8.jpg!
+
+Note: after you complete the application wizard, you can create additional models for your app under Settings in the QuickLinks sidebar ("Create new object"), but for this app, we'll just use one.
+
+h2. Application Generation Complete 
+
+In the editor, you'll notice that both client & server code was generated (as noted we'll ignore the server code). Under the client tab, all of your product code is in a single folder in the app directory called "Product."
+
+h2. Set up the initial screen
+First we will edit the view code to set up the initial screen. By default, when a Rhodes application starts, it will present the UI defined in app/index.erb.  You could edit that file to contain links to different screens in your application.  However, for this application, we'll just point the start page to the products index page.
+
+Edit "rhoconfig.txt" at root level of the client files and change:
+
+    start_path = '/app'
+
+to:
+
+    start_path = '/app/Product'
+
+Save your change.
+
+h2. Build the App 
+Select the "Builds" tab.  For this example, we'll first build for Android since there is an Android Simulator available for Mac, Windows and Linux. RhoHub also offers builds for BlackBerry and Windows Mobile, but you need Windows to run the simulators and install to a device; however, running the simulators in Windows virtual machines such as VMware or Parallels works fine.
+
+!http://img.skitch.com/20091103-k1d8j7e7qjteth35t8ciwe48gc.png!
+
+Select "Android" as the "Build Type" and then click "Create Build." (You can leave the version as is.  This refers to the version of Rhodes that you want to build with.) It will take a minute or two for your app to build. While it is building, you will see feedback in the list below. You can use this time to download and install the Android SDK and simulator if you haven't already using the handy link on the right side of the table or under "Developer Tools" in the right sidebar.
+
+!http://img.skitch.com/20091103-p85uahtmfmnumir6wapgmf8277.png!
+
+When it is finished building, you should see "Success" in the status column:
+
+!http://img.skitch.com/20091103-b2n7e7d7ekkbsr9bpwaugc8sju.png!
+
+h2. Running the App on Android 
+
+You need to install the Android SDK on your development machine (linked from the Developer Tools section on the right side of the builds section).  It'll be the 1.5 SDK, but we'll be building for Android 1.1, which will allow your application to work on all Android devices.  After installing the SDK, you'll need to set up and run the simulator before installing your application.
+
+Type the following into your command line:
+
+    android create avd --name rhoAndroid11 --target 1 --sdcard 32M --skin HVGA
+
+You will see the following output:
+
+    Android 1.1 is a basic Android platform.
+    Do you wish to create a custom hardware profile [no]
+
+Press return (you don't need a custom hardware profile), and you should see:
+
+    Created AVD 'rhoAndroid11' based on Android 1.1
+
+h3. Running the emulator 
+
+Next you will run the emulator, by typing the following on the command line:
+
+    emulator -avd rhoAndroid11
+
+The Android emulator will open in a window. The window will open quickly, but you will need to wait for the emulator to start up.  When it does, it should look like this:
+
+!http://img.skitch.com/20090906-r9nc75wt9g852crfji5qnu4x77.jpg!
+
+h3. Install the app 
+Download the build from RhoHub and unzip it.
+
+From another terminal window, cd into the directory where you unzipped the build from RhoHub and install the app in the emulator with the Android adb command: 'adb install Rhodes.apk' Sample command line session:
+
+    $ cd ~/Downloads/749ef187-0c9b-4e14-be34-50c97a598846 
+    $ ls
+    Inventory.apk*	log.txt*
+    $ adb install Inventory.apk
+    2099 KB/s (698543 bytes in 0.324s)
+        pkg: /data/local/tmp/Inventory.apk
+    Success
+
+
+Note: your application will remain installed in the simulator even if you shut it down and launch it again.  When you want to uninstall, use the following command:
+
+    adb uninstall com.rhomobile.inventory
+
+h3. Open the app 
+
+To see your app running in the simulator, click on the gray tab at the bottom of the screen:
+
+!http://img.skitch.com/20090906-qxayxpx3b299ctf81f9941xq96.jpg!
+
+The tab will slide up to reveal the built-in and installed applications.  Your new app appears with the Rhodes logo by default, you can see it identified with the name "Inventory":
+
+!http://img.skitch.com/20091103-g9mj8famn81g1d65sp15i8scus.png!
+
+Click on the Inventory application icon and your application will open to the product page:
+
+!http://img.skitch.com/20091103-xxgkkm4g9spdknbsg6yqj46e2j.png!
+
+To create a new product, click the new button in the upper-right.
+
+h3. Using the Inventory application 
+
+Part of the auto-generated application is a page to enter data for new records which will then appear in a list on the main page. To create a new record, click the "new" button on the main page, and then you will see a screen like this:
+
+!http://img.skitch.com/20090907-r2fmxtnhschjxyqtgr65a523t1.jpg!
+
+Enter information about a product. The following screenshots show data entered for the Acme Hovercraft.  When you click create, you will be returned to the main product page and it will show one item in the list:
+
+!http://img.skitch.com/20090907-r1xfe8fpcrc527kfx6twwmnx9.jpg!
+
+By default the first attribute is displayed.  In the next section, we'll modify the display.  For now, let's take a quick look at the other auto-generated pages.  If you click on the "Acme" item, you will see a page that displays all of the attributes for the product:
+
+!http://img.skitch.com/20090907-rsibpt1d68i2dwrsx2s64jeb5.jpg!
+
+If you click edit in the top-right, the application will display a page similar to the "new" page which lets you edit or delete the record:
+
+!http://img.skitch.com/20090907-bja6nrtphxbjqnhseae8xpge7c.jpg!
+
+h2. Modify views
+Next we will learn how to modify one of the application screens. In your application, you may have noticed that by default, the attribute displayed in the list is the first one; however, for this example, we want to display the brand and name.  We can change this by simply editing HTML.
+
+Go back to RhoHub in your browser, and click on the "Editor" tab. 
+
+In app/Product/index.erb, change the list item to display the name along with the brand:
+    
+<pre>
+     &lt;li&gt;<%=link_to "#{x.brand} #{x.name}", :action => :show, :id => x.object%>&lt;/li&gt;
+</pre>
+
+Save the file.
+
+h3. Re-load the app
+Now that you have modifed your app on RhoHub.  Create another Android build from the builds page, download the zip and extract the files, then cd into that directory, uninstall and install. Here are the specific steps on the command line:
+
+    $ cd dd9f9c6e-dc0b-41ad-97e0-6d9e90c0eee2
+    $ adb uninstall com.rhomobile.inventory
+    Success
+    $ adb install Inventory.apk
+    1626 KB/s (657878 bytes in 0.395s)
+      pkg: /data/local/tmp/Inventory.apk
+    Success
+
+After reloading it (and adding another record for the "Ford Flitter", the main page should look like this:
+
+!http://img.skitch.com/20090907-uy9ucwwrdrq7g5r3hj4u2p1tc.jpg!
+
+You can build for other target platforms using RhoHub. To run other device builds, you will need to install the appropriate simulator and/or SDK from the platform vendor.
+h2. iPhone Launcher 
+If you are developing on a Mac and have installed the iPhone SDK, you can use the "iPhone Launcher" to easily download and run your app in the iPhone simulator.  It also includes a handy reload button that will build your application, if needed, download from RhoHub and install in your local simulator. 
+!http://img.skitch.com/20091103-mep5rdim5yeksg67phtijtptd7.png!
+
+Note: if you are running in the iPhone simulator and you want to look at the client log you can find it in a directory named like this (you will have to look for the correct GUID for your build -- it is easiest to find if you just reset the simulator and only test one app at a time):
+    /Library/Application Support/iPhone Simulator/User/Applications/364FFCAF-C71D-4543-B293-9058E31CFFEE/Documents
+
+h2. Windows Desktop Client 
+
+[[Testing with the Rhodes Desktop Client]] is an alternate workflow on Windows which reduces the number of steps to testing your application (and starts much faster than the device simulators); however, you will still want to test your final application on the specific target platform.
+
+h1. Lesson 2: Connecting to Server Data Source
+Next we will connect the application that we built in Lesson 1 to a web service and sync local data with the remote data source.
+
+Typically when developing a connected mobile application, there is significant complexity in having code running locally, code hosted on the server and code running on a device. With RhoHub's hosted IDE and hosted sync, your middle-tier "source adapter" is automatically deployed and you can build for multiple platforms without setting up a complete dev environment locally.  In the diagram below you can see how your app, whether running in the simulator on your development machine or installed on a device connects to RhoHub where your source adapter is developed hosted.
+
+!http://www.gliffy.com/pubdoc/1808547/M.jpg!
+
+Note: if you want to, you can develop locally and upload the source code to RhoHub.
+
+h2. Users and Logins 
+It is important to understand how your rhodes client connects and logs in into rhohub (and rhosync). Your rhodes client will login and create a session with rhohub. It will use this session to issue create, read, update or delete instructions from the client to rhohub. Typically, these rhodes to rhohub sessions are good for 1 year, and so you only have to login from the client when you initially install. As needed, rhohub will in turn establish a connection and login to your server data source (aka backend) to create, read, update or delete records using code your write in your source adapter (see below). The user names and passwords for those systems can be the same or totally different, and rhohub may have to re-authenticate itself every time your source adapter runs. In some cases, a backend system may not require any login at all, example an application that reads publicly available RSS feeds. However, you always need to have a login between the rhodes client and rhohub.
+
+There are two approaches available.
+
+1. Create a user in rhohub. This is the simplest way to get started and what follows in the tutorial. Login from your rhodes client using that login and password. A disadvantage of this approach is that you have to create these users ahead of time in rhohub which makes it hard for for arbitrary new users to connect (see next section). Next, you have to subscribe the user you just created to your application because when a client connects with the user name and password you set up, rhohub will check if they have permission to sync with the given application and if not will reject your client's sync request. Lastly, you can add credentials to the subscription you created. Credentials are information like the real backend user name and password and URLs that are saved in the rhohub database and later passed to your source adapter when it executes. Credentials are optional.
+
+    Example, you create user a new user john with password mobile in rhohub. This login and password are only used between the rhodes client and rhohub. Subscribe him to your application. Now in johns subscription, you can set his credentials to be john.adams123 with password enterprise because that is what John uses to login to your enterprise system. John can login from his client using john and mobile, but rhohub will save, and your source adapter will have access to john.adams123 and enterprise when it runs and john's device is syncing.
+
+    Tip: if you do not care to limit access on a per user basis, you can hard code a shared login and password into your client application. This approach is generally not suitable if you need to display different data for different users however.
+
+2. Because we usually don't know ahead of time which users will be accessing an application, and we don't want to keep a 2nd set of user names and passwords in rhohub, we created delegated authentication. Using delegated authentication your backend application is responsible for logins and passwords instead of rhohub. The rest of this tutorial doesn't use delegated authentication as it is a slightly more advanced topic. To read more about delegated authentication, please see http://wiki.rhomobile.com/index.php/Delegated_authentication.
+
+h2. Subscribe User 
+In order for your application to connect to the server, you will need to subscribe a user. You can use the same user and credentials that you use to log in to RhoHub; however, it is advisable to create a test user so that you can publish your experimental application for others to use.  To create a new user, click on "Dashboard" then select the "Users" tab, click "Add User" and create a user named "tester" with the password "tester" with your email address. 
+
+Then to go back to your application, click on "Dashboard" and choose "Inventory" from your list of applications.  Then click on the "Settings" tab in RhoHub and scroll down to the Permissions panel at the bottom of the screen.
+
+!http://img.skitch.com/20091102-8ebgp8gwq6nkt76rf874tp4bp5.png!
+
+Check the "tester" user and leave the other fields blank, then click "Save."
+
+h2. Creating a Source Adapter: Query
+
+Go to RhoHub in your browser and click on the "Editor" tab in the Inventory project.  Under the "Server" tab, select "product.rb" -- this is a template the was generated by the application creation wizard.  
+
+!http://img.skitch.com/20091102-cgiaucwq4jpmi7yi6m51nsf66p.png!
+
+If this was an application that required us to login to see the products, we would implement login, but for now, just delete the implementation of the login method so it doesn't raise an exception. The example shop on heroku we are using does not require logins. We will modify the code to connect to a mock back end, which you can see at: http://productshop.heroku.com/
+
+Next we will implement the query method to fetch the list of products so that we will be able to display them on the phone.
+
+Query is called every time that the client syncs with the server.
+We'll use an XML API to access a list of products. You can see the data we will fetch by looking at it in your browser: http://productshop.heroku.com/products.xml  
+
+In RhoHub, we're not in the Rails enviroment, so we need to require the libraries we'll be using.  We'll use nokogiri for XML parsing and open-uri to access the URL over http.  Put the following two lines at the top of product.rb:
+
+    require 'nokogiri'
+    require 'open-uri'
+
+The code to implement the fetching of the data from the web service needs to be in the query method.  We'll do the data transformation, right after fetching the data:
+
+    def query
+      @result = {}
+      xml = nil
+      open("http://productshop.heroku.com/products.xml") do |f|
+        xml = Nokogiri::XML(f.read)
+      end
+      xml.xpath('./products/product').each do |product_node|
+        id = product_node.xpath("./sku/text()").to_s
+        attr_hash = {}
+        product_node.children.each do |attr_node|
+          attr_hash[attr_node.name] = attr_node.text
+        end
+        @result[id] = attr_hash
+      end
+    end
+
+The query method reads the XML data from the productshop web service, then iterate through each XML node and transform it into a Rhodes "generic result" which it stores in @result. The format of this generic result is a hash, where each key is a unique string with a value that is a hash of object attributes. For example, if there were two products, we would want to create a result like this:
+
+    {"88"=> {"brand"=>"Ruby", "name"=>"Rails", "price"=>"$1000000000.00", "quantity"=>"1", "sku"=>"88"} 
+     "900"=>{"brand"=>"Ford", "name"=>"Hovercraft", "price"=>"$30,000", "quantity"=>"1", "sku"=>"900"}}
+
+
+Click Save!
+
+h2. Test your source adapter
+
+To test your source adapter, click "Show Records" at the top-right of the Editor panel. (Note: this will automatically reload the source adapter into the running sync server). Note that the "Show Records" button acts on the selected source adapter file. ("product.rb" is selected by default, so you don't need to do anything in this case.)
+
+You should see a list of IDs, which you can open to see their contents.  The screenshot below shows that the server had 4 records at the time of this writing.  The record with id (sku) "100" has been open to reveal its attributes.
+
+!http://img.skitch.com/20091102-jnff9564hsh4ed38e9wt673h4p.png!
+
+If your code had an error such that the query method raised an exception, the console will automatically open and display errors. However, if the format is correct and no exceptions were raised, the console will remain closed. If you are not seeing the data you expect, click on the arrow to see the console output. You can add "puts" statements to your code to analyze what is going on.  You can also view the log by clicking the "View Logs" button (next to the "Show Records" button).
+
+
+
+h2. Sync Remote Data to the Device 
+
+With the implementation of the source adapter, which is automatically deployed on RhoHub, you can sync data from the device. Note: you don't need to update the application in the simulator since we only modified server code.  
+
+To sync, you will need to login using the following steps.  (Note: later you can develop your own UI that will present a login screen or automatically log in for anonymous access.)
+
+Clicking "menu" on the device chrome will bring up an array of six choices. Then choose the "more" option:
+
+!ttp://img.skitch.com/20090907-nh1f3mtb8cg6k49h9xj54ja6xe.jpg!
+
+You will next see a menu.  Select "Options"
+
+!http://img.skitch.com/20090907-bw926dd25uwf9rycuscpfs5uwc.jpg!
+
+This takes you to the Rhodes Setttings page which was auto-generated and is part of your application.  (You can see the source to this page under the Client tab on RhoHub: app/Settings/index.erb)
+
+!http://img.skitch.com/20090907-ks6puwmpc5pe1cs485buqb48rh.jpg!
+
+Click the "Login" link which will take you to the login page (app/Settings/login.erb)
+
+!http://img.skitch.com/20090907-1fqcqm44sjg2di6iqnttqmtbes.jpg!
+
+Now type login "tester" and password "tester" and click login.  You will be directed to a wait screen and when login is complete, you will see the product page again.  This will show you local data, since the start page is rendered immediately after login, but before sync is complete.  If you refresh the screen you will see the remote data.
+
+What happened to your local data?  Well, we're not done yet.  The local data is trying to sync to the server, but if you recall, we have not yet implemented the create method which will sync the local data to the remote web service.
+
+h2. Sync Local Data to the Remote Web Service 
+
+Implement a create method.  Note that you will need to add the requires at the top of the file.
+
+    require 'net/http'
+    require 'uri'
+
+    def create(name_value_list,blob=nil)
+      attrvals={}
+      name_value_list.each { |nv| attrvals["product["+nv["name"]+"]"]=nv["value"]} # convert name-value list to hash
+      res = Net::HTTP.post_form(URI.parse("http://productshop.heroku.com/products/create"),attrvals)  
+    end
+
+You can test it, by clicking "Create Records" at the top of the source adaptor code editor panel.  Fill in some attributes (including a unique sku) and click "create." 
+!http://img.skitch.com/20091103-raxd1s3rwfncetf2eqr16221pu.png!
+
+This will call your source adapter's create method, which in turn calls the web service to save the data remotely.  You should see a new record added to the list. Now in your application which is running in your local simulator, go to Options (or Settings) and select "Perform Sync" -- you should see your new record along with the remote data that was there before.
+

@@ -1,0 +1,146 @@
+h2.  Customizing your application home page
+
+*About this tutorial:*
+This tutorial assumes that you have already created a RhoHub account and have completed the simple-app tutorial to familiarize yourself with the RhoHub development environment.
+
+h3.  Create a new project
+
+Create a new project with at least two objects.  We'll use the simple-app Inventory project as our example here, but feel free to create your own project.
+
+If you're using the inventory application, add a second object by clicking the "Add new object" link under "Quick links."  Create an object named "store" with the attributes "store_id", "city", and "state" and verify your new object is displayed in your file tree in the editor.
+
+
+
+h3.  Define your app's home page
+
+Make sure that your application's home page 
+#  In the client directory, select "rhoconfig.txt" 
+#  Near the beginning of the file, find start_path and make sure it is set to 
+
+bq. start_path = /app/index.erb
+
+If you haven't manually deleted your applications's main index.erb, if you were to build your app now, this is what you'd see.
+
+*insert screenshot of blank index page here*
+
+
+
+
+h3.  Customize your home page
+
+But that isn't very useful to us - on our front page, we want to display the three most recent records for both the store and the inventory, and we want to be able to create new objects of both types from the home page.
+
+
+If you're experienced with Rails, you will probably be familiar with the MVC paradigm used in Rhodes applications.  Here's a brief overview of how your application is laid out. 
+
+INSERT IMAGE
+
+The controller action being called defines which view is displayed, referred to as the "action" in a controller method:
+bq.    render :action => :show
+
+In turn, each view is rendered in the context of a layout file, which includes the stylesheets, javascript, and any additional dependencies in the view.  By default, all views in the Rhodes project will be rendered using /app/layout.erb. 
+You can also change the layout used to render the view can also be specified on a per-class or per-method basis, but that's beyond the scope of this tutorial.
+
+
+*So let's get back to our project.*
+
+To customize the view of this initial page, find the /app/index.erb file in your client file tree.  You'll see the following code in /app/index.erb:
+
+bc.  <div class="toolbar">
+  <h1 id="pageTitle">
+    InventorySync
+  </h1>
+</div>
+<ul id="home" selected="true" title="InventorySync">
+  <li>Add links here...</li>
+</ul>
+
+
+
+The content you are seeing on the home page, then, is composed of two main elements:
+* a div called toolbar containing a h1 heading
+* an unordered list of items which can contain links (or images, or other items you would normally put in a list)
+
+
+If you want to know where the definitions for these styles come from, take a look at your application's /app/layout.erb file.  This file is the template that wraps any individual view files you may have.  
+
+First, lets tackle the easy bit: we'll start customizing your home page view from the bottom-up, placing buttons that take you to each object's "new" page, then we'll address the more complex issue of accessing the objects' records.
+
+
+h4.  Add links to your home page.
+
+The easiest way to add button links to your home page is to 
+* Create links to the "new" method of each object using one of the predefined classes available in the RhoMobile css.
+* Wrap the buttons in a list tag and place the buttons inside the list
+* Apply any desired spacing to the li tags
+
+
+
+In Rhodes applications, the easiest way to create a button link is to apply one of the button link styles to an a tag.  
+
+The "button" class can be used to create buttons in the top toolbar.  However, since the button class uses absolute positioning, you can only create one "button" per page - or rather, if you create multiple buttons, only the topmost button will be visible.
+
+The second alternative is to use custom classes to define the styles for your buttons.
+
+As an example, for the iPhone, there are three button classes available in the css automatically generated when you create your application:
+* graybutton
+* whitebutton
+* blackbutton
+
+
+bq. insert code here.
+
+
+However, these classes are not available on other platforms.
+
+You can create custom classes in two ways:  
+* Create classes for all platforms by adding them to a stylesheet which is included for all platforms, like base.css.
+* Create classes in custom stylesheets for each platform.
+
+The best solution may differ from project to project.
+
+
+h4.  Position your buttons in the view
+
+If you were to build your project now, chances are, your buttons won't look quite right.  To ensure that your buttons are properly positioned, it's easiest to place each button in the context of a list.
+
+
+bq. insert code here.
+
+
+
+
+
+Finally, add padding to each list item to ensure that all elements don't appear squashed together.
+
+bq. insert updated code here.
+
+
+h3.  Adding recent items to your home page.
+
+
+
+
+h3. Customizing application styles
+
+If you wish to modify any of the other styles in your application, now you know where to go: 
+
+* stylesheets are found in /app/public/css
+* images are found in /app/public/images
+
+If you include your custom styles to existing stylesheets, there is no need to modify the layout page - simply include them your class names in the tags in your view.  However, if you create new stylesheets, be sure to include them in your application's layout.erb file.  If you've created custom stylesheets for different platforms, make certain to include them in the right place
+
+
+<head>
+ *global stylesheets get included here *
+<link href="/public/css/base.css" type="text/css" rel="stylesheet"/>  
+<% if System::get_property('platform') == 'APPLE' %>
+    ** Stylesheets and js for iPhone get added here **
+<% else %>
+  <% if System::get_property('platform') == 'Blackberry' %>
+        ** Blackberry stylesheets get added here **
+  <% else %>  
+        ** Blackberry stylesheets get added here **
+  <% end %>
+<% end %>
+</head>

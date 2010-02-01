@@ -1,4 +1,5 @@
 h1. Lesson 2: Connecting to Server Data Source
+
 Next we will connect the application that we built in Lesson 1 to a web service and sync local data with the remote data source.
 
 Typically when developing a connected mobile application, there is significant complexity in having code running locally, code hosted on the server and code running on a device. With RhoHub's hosted IDE and hosted sync, your middle-tier "source adapter" is automatically deployed and you can build for multiple platforms without setting up a complete dev environment locally.  In the diagram below you can see how your app, whether running in the simulator on your development machine or installed on a device connects to RhoHub where your source adapter is developed hosted.
@@ -8,19 +9,26 @@ Typically when developing a connected mobile application, there is significant c
 Note: if you want to, you can develop locally and upload the source code to RhoHub.
 
 h2. Users and Logins 
+
 It is important to understand how your rhodes client connects and logs in into rhohub (and rhosync). Your rhodes client will login and create a session with rhohub. It will use this session to issue create, read, update or delete instructions from the client to rhohub. Typically, these rhodes to rhohub sessions are good for 1 year, and so you only have to login from the client when you initially install. As needed, rhohub will in turn establish a connection and login to your server data source (aka backend) to create, read, update or delete records using code your write in your source adapter (see below). The user names and passwords for those systems can be the same or totally different, and rhohub may have to re-authenticate itself every time your source adapter runs. In some cases, a backend system may not require any login at all, example an application that reads publicly available RSS feeds. However, you always need to have a login between the rhodes client and rhohub.
 
 There are two approaches available.
 
-1. Create a user in rhohub. This is the simplest way to get started and what follows in the tutorial. Login from your rhodes client using that login and password. A disadvantage of this approach is that you have to create these users ahead of time in rhohub which makes it hard for for arbitrary new users to connect (see next section). Next, you have to subscribe the user you just created to your application because when a client connects with the user name and password you set up, rhohub will check if they have permission to sync with the given application and if not will reject your client's sync request. Lastly, you can add credentials to the subscription you created. Credentials are information like the real backend user name and password and URLs that are saved in the rhohub database and later passed to your source adapter when it executes. Credentials are optional.
+h4. 1. Create a user in rhohub.
 
-    Example, you create user a new user john with password mobile in rhohub. This login and password are only used between the rhodes client and rhohub. Subscribe him to your application. Now in johns subscription, you can set his credentials to be john.adams123 with password enterprise because that is what John uses to login to your enterprise system. John can login from his client using john and mobile, but rhohub will save, and your source adapter will have access to john.adams123 and enterprise when it runs and john's device is syncing.
+This is the simplest way to get started and what follows in the tutorial. Login from your rhodes client using that login and password. A disadvantage of this approach is that you have to create these users ahead of time in rhohub which makes it hard for for arbitrary new users to connect (see next section). Next, you have to subscribe the user you just created to your application because when a client connects with the user name and password you set up, rhohub will check if they have permission to sync with the given application and if not will reject your client's sync request. Lastly, you can add credentials to the subscription you created. Credentials are information like the real backend user name and password and URLs that are saved in the rhohub database and later passed to your source adapter when it executes. Credentials are optional.
 
-    Tip: if you do not care to limit access on a per user basis, you can hard code a shared login and password into your client application. This approach is generally not suitable if you need to display different data for different users however.
+For example, you create user a new user john with password mobile in rhohub. This login and password are only used between the rhodes client and rhohub. Subscribe him to your application. Now in johns subscription, you can set his credentials to be john.adams123 with password enterprise because that is what John uses to login to your enterprise system. John can login from his client using john and mobile, but rhohub will save, and your source adapter will have access to john.adams123 and enterprise when it runs and john's device is syncing.
 
-2. Because we usually don't know ahead of time which users will be accessing an application, and we don't want to keep a 2nd set of user names and passwords in rhohub, we created delegated authentication. Using delegated authentication your backend application is responsible for logins and passwords instead of rhohub. The rest of this tutorial doesn't use delegated authentication as it is a slightly more advanced topic. To read more about delegated authentication, please see http://wiki.rhomobile.com/index.php/Delegated_authentication.
+Tip: if you do not care to limit access on a per user basis, you can hard code a shared login and password into your client application. This approach is generally not suitable if you need to display different data for different users however.
+
+
+h4. 2. Delegated Authentication
+
+Because we usually don't know ahead of time which users will be accessing an application, and we don't want to keep a 2nd set of user names and passwords in rhohub, we created delegated authentication. Using delegated authentication your backend application is responsible for logins and passwords instead of rhohub. The rest of this tutorial doesn't use delegated authentication as it is a slightly more advanced topic. To read more about delegated authentication, please see http://wiki.rhomobile.com/index.php/Delegated_authentication.
 
 h2. Subscribe User 
+
 In order for your application to connect to the server, you will need to subscribe a user. You can use the same user and credentials that you use to log in to RhoHub; however, it is advisable to create a test user so that you can publish your experimental application for others to use.  To create a new user, click on "Dashboard" then select the "Users" tab, click "Add User" and create a user named "tester" with the password "tester" with your email address. 
 
 Then to go back to your application, click on "Dashboard" and choose "Inventory" from your list of applications.  Then click on the "Settings" tab in RhoHub and scroll down to the Permissions panel at the bottom of the screen.
@@ -44,12 +52,12 @@ We'll use an XML API to access a list of products. You can see the data we will 
 
 In RhoHub, we're not in the Rails enviroment, so we need to require the libraries we'll be using.  We'll use nokogiri for XML parsing and open-uri to access the URL over http.  Put the following two lines at the top of product.rb:
 
-    require 'nokogiri'
-    require 'open-uri'
+bc. require 'nokogiri'
+require 'open-uri'
 
 The code to implement the fetching of the data from the web service needs to be in the query method.  We'll do the data transformation, right after fetching the data:
 
-    def query
+bc. def query
       @result = {}
       xml = nil
       open("http://productshop.heroku.com/products.xml") do |f|
@@ -115,10 +123,10 @@ h2. Sync Local Data to the Remote Web Service
 
 Implement a create method.  Note that you will need to add the requires at the top of the file.
 
-    require 'net/http'
+bc. require 'net/http'
     require 'uri'
 
-    def create(name_value_list,blob=nil)
+bc. def create(name_value_list,blob=nil)
       attrvals={}
       name_value_list.each { |nv| attrvals["product["+nv["name"]+"]"]=nv["value"]} # convert name-value list to hash
       res = Net::HTTP.post_form(URI.parse("http://productshop.heroku.com/products/create"),attrvals)  

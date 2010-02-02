@@ -7,7 +7,7 @@ h3.  Create a new project
 
 Create a new project with at least two objects.  We'll use the simple-app Inventory project as our example here, but feel free to create your own project.
 
-If you're using the inventory application, add a second object by clicking the "Add new object" link under "Quick links."  Create an object named "store" with the attributes "store_id", "city", and "state" and verify your new object is displayed in your file tree in the editor.
+If you're using the Inventory application, add a second object by clicking the "Add new object" link under "Quick links."  Create an object named "store" with the attributes "store_id", "city", and "state" and verify your new object is displayed in your file tree in the editor.
 
 
 
@@ -64,7 +64,7 @@ The content you are seeing on the home page, then, is composed of two main eleme
 
 If you want to know where the definitions for these styles come from, take a look at your application's /app/layout.erb file.  This file is the template that wraps any individual view files you may have.  
 
-First, lets tackle the easy bit: we'll start customizing your home page view from the bottom-up, placing buttons that take you to each object's "new" page, then we'll address the more complex issue of accessing the objects' records.
+We'll start customizing your home page view from the bottom-up, placing buttons that take you to each object's "new" page.
 
 
 h4.  Add links to your home page.
@@ -116,8 +116,6 @@ Finally, add padding to each list item to ensure that all elements don't appear 
 bq. insert updated code here.
 
 
-h3.  Adding recent items to your home page.
-
 
 
 
@@ -140,7 +138,8 @@ If you include your custom styles to existing stylesheets, there is no need to m
   <% if System::get_property('platform') == 'Blackberry' %>
         ** Blackberry stylesheets get added here **
   <% else %>  
-        ** Blackberry stylesheets get added here **
+        ** Non-iPhones or Blackberry stylesheets get added here **
   <% end %>
 <% end %>
 </head>
+

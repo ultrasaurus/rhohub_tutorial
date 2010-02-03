@@ -61,7 +61,7 @@ bc. def query
       @result = {}
       xml = nil
       open("http://productshop.heroku.com/products.xml") do |f|
-        xml = Nokogiri::XML(f.read)
+          xml = Nokogiri::XML(f.read)
       end
       xml.xpath('./products/product').each do |product_node|
         id = product_node.xpath("./sku/text()").to_s
@@ -101,7 +101,7 @@ To sync, you will need to login using the following steps.  (Note: later you can
 
 Clicking "menu" on the device chrome will bring up an array of six choices. Then choose the "more" option:
 
-!ttp://img.skitch.com/20090907-nh1f3mtb8cg6k49h9xj54ja6xe.jpg!
+!http://img.skitch.com/20090907-nh1f3mtb8cg6k49h9xj54ja6xe.jpg!
 
 You will next see a menu.  Select "Options"
 
@@ -128,7 +128,7 @@ bc. require 'net/http'
 
 bc. def create(name_value_list,blob=nil)
       attrvals={}
-      name_value_list.each { |nv| attrvals["product["+nv["name"]+"]"]=nv["value"]} # convert name-value list to hash
+      name_value_list.each { |nv| attrvals[ "product[" + nv["name"] + "]" ]= nv["value"] } # convert name-value list to hash
       res = Net::HTTP.post_form(URI.parse("http://productshop.heroku.com/products/create"),attrvals)  
     end
 
